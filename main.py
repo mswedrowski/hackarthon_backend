@@ -17,17 +17,27 @@ app.state = get_app_state()
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return "Hello welcome to ArtMatch App!"
 
 
 @app.post("/translate/")
 async def post_translate(req: TranslateRequest):
+    '''
+    Obtain translation for given text
+    :param req (TranslateRequest): Request containing text to be translated
+    :return: Json containing text translated to polish
+    '''
     args = {k: v for k, v in dict(req).items() if v is not None}
     return translate(**dict(args))
 
 
 @app.post("/speech_to_text/")
 async def post_speech_to_text(req: ASRRequest):
+    '''
+    Obtain transcription of the recording
+    :param req (ASRRequest): Request url to recording stored on GDRive
+    :return: Json containing text with transcription
+    '''
     # To demonstrate usage we focused on gdrive links for now
 
     gdrive_url = req.url
@@ -45,15 +55,20 @@ async def post_speech_to_text(req: ASRRequest):
 
 @app.get("/users/")
 async def get_users():
+    '''
+    Get json with mocked user db. Needed only for showcase purposes.
+    :return: Json with mocked database of users
+    '''
     return app.state['mocked_user_db']
 
 
 @app.post("/recommend_events/")
 async def recommend_events(req: RecommendEventRequest):
+    '''
+    Obtain recommend events for given user
+    :param req (RecommendEventRequest): Request containing username for which we want to recommend events
+    :return: Json containing recommended events with scoring
+    '''
     user_db = app.state['mocked_user_db']
     event_db = app.state['mocked_event_db']
     return {'events': mocked_recommendation(event_db, user_db, req.username)}
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
