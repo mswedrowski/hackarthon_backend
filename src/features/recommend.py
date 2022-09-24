@@ -3,7 +3,6 @@ import pandas as pd
 
 
 def mocked_recommendation(event_list, user_list, target_user):
-    # In the future use grose.io
     users_score = {}
     for u in user_list:
         events_scores = []
